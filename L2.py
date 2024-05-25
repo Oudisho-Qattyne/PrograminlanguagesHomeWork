@@ -1,6 +1,6 @@
 import re
 def tokenize(expression) :
-    tokens = re.findall(r'\d+|\+|\-|\*|/|\(|\)|\^|\=' , expression)
+    tokens = re.findall(r'\d+|\+|\-|\*|/|\(|\)|\^' , expression)
     return tokens
 
 
@@ -8,10 +8,6 @@ def tokenize(expression) :
 def parse_expression(tokens):
     if not tokens:
         raise ValueError("Invalid expression: Empty input")
-    current_token = tokens.pop(0)
-    if current_token != '=':
-        print(current_token)
-        raise ValueError("Invalid expression: did't start with = (not exel RE)")
     current_token = tokens.pop(0)
     result = parse_term(current_token, tokens)
     while tokens and tokens[0] in ['+' , '-']:
@@ -29,7 +25,7 @@ def parse_term(token, tokens) :
     if not token.isdigit():
             raise ValueError("invalid expression: Expected number, got '{token} '")
     result = int(token)
-    while tokens and tokens[0] in ['*' , '/' , '^']:
+    while tokens and tokens[0] in ['*' , '/']:
         operator = tokens.pop(0)
         if not tokens :
             raise ValueError("InvaIid expression: Unexpected end of input")
@@ -40,8 +36,6 @@ def parse_term(token, tokens) :
             result *= int(next_token)
         elif operator == '/':
             result /= int(next_token)
-        elif operator == '^':
-            result = pow(result , int(next_token))
     return result
 
 
@@ -54,7 +48,7 @@ def evaluate_expression(tokens):
         print(f"Error: {str(e)}")
         
 try:
-    expression = '=4 ^ 2'
+    expression = '4 + 2'
     tokens = tokenize(expression)
     evaluate_expression(tokens.copy())
 except ValueError as e:

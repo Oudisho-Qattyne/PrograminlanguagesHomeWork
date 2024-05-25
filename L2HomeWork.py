@@ -53,7 +53,7 @@ def evaluate_expression(tokens):
         print(f"Error: {str(e)}")
         
 try:
-    expression = '=4 ^ 2'
+    expression = '=4 ^ 2 + 1'
     tokens = tokenize(expression)
     evaluate_expression(tokens.copy())
 except ValueError as e:

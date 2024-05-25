@@ -13,12 +13,6 @@ elif re.search(r'[\/*/?/]', sheet_name) :
 
 
 
-#     #check cell name
-# cell_name = cell.coordinate    
-# if not re.match(r'[A-Za-z]+\d+' , cell_name):
-#     raise ValueError( ' syntax error : cell name')
-
-
 def tokenize(expression):
     tokens = re.findall(r'=|[A-Za-z]\d+|\d+|\+|-|\*|/|\(|\)', expression)
     return tokens
