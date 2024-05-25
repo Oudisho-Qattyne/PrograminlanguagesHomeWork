@@ -1,7 +1,3 @@
-# in this file we will build simple interpreter to deal with 
-# 1] SUM Function
-# 2] MIN Function
-
 import re
 import openpyxl
 import math
@@ -21,101 +17,19 @@ def read_excel_cell(file_path, sheet_name, cell):
         print(f'Error : {e}')
         return 0
 
-# sum function
-def sum_values(tokens):
-    # check syntax error
-    if tokens[0] != '(' or tokens[-1] != ')':
-        return -1
-    
-    # empty range => return 0
-    if len (tokens) == 2 and tokens[0] == '(' and tokens[-1] == ')':
-        print('State 1')
-        return 0
-    
-    # range => sum the values
-    # TODO : = SUM(A1;A3;A4:A5)
-    if len (tokens) > 2 and tokens[0] == '(' and tokens[-1] == ')':
-        # range or some cells
-        # range
-        if re.match(r'[A-Za-z]\d+',str(tokens[1])) and tokens[2] == ':' and re.match(r'[A-Za-z]\d+',str(tokens[-2])):
-            range_end_ref_num = re.findall(r'\d+',str(tokens[-2]))
-            range_start_ref_num = re.findall(r'\d+',str(tokens[1]))
-            range_ref_name = re.findall(r'[A-Za-z]',str(tokens[1]))
-            range_cells_names = []
-            for i in range(int(range_start_ref_num[0]),int(range_end_ref_num[0])+1):
-                range_cells_names.append(str(range_ref_name[0])+str(i)) 
-            range_values = []
-            for cell in range_cells_names:
-                temp = read_excel_cell(file_path,sheet_name,cell)
-                range_values.append(temp)
-            total = 0
-            for val in range_values:
-                total = total + val
-
-            return total
-        # some cells
-        else:
-            total = 0
-            for tok in tokens:
-                if re.match(r'[A-Za-z]\d+',str(tok)):
-                    val = read_excel_cell(file_path,sheet_name,str(tok))
-                    total = total+val
-            return total
-                       
-# min function
-# no range => error
-# range => min
-# cells => the smallest one
-def min_values(tokens):
-    # check syntax error
-    if tokens[0] != '(' or tokens[-1] != ')':
-        return -1
-    
-    # empty range => error
-    if len (tokens) == 2 and tokens[0] == '(' and tokens[-1] == ')':
-        return -1
-    
-    if len (tokens) > 2 and tokens[0] == '(' and tokens[-1] == ')':
-        # range or some cells
-        # range
-        if re.match(r'[A-Za-z]\d+',str(tokens[1])) and tokens[2] == ':' and re.match(r'[A-Za-z]\d+',str(tokens[-2])):
-            print("s,df,oe,lc,")
-            range_end_ref_num = re.findall(r'\d+',str(tokens[-2]))
-            range_start_ref_num = re.findall(r'\d+',str(tokens[1]))
-            range_ref_name = re.findall(r'[A-Za-z]',str(tokens[1]))
-            range_cells_names = []
-            for i in range(int(range_start_ref_num[0]),int(range_end_ref_num[0])+1):
-                range_cells_names.append(str(range_ref_name[0])+str(i)) 
-            range_values = []
-            for cell in range_cells_names:
-                temp = read_excel_cell(file_path,sheet_name,cell)
-                range_values.append(temp)
-            m_min = min(range_values)
-            return m_min
-        # some cells
-        else:
-            m_values = []
-            for tok in tokens:
-                if re.match(r'[A-Za-z]\d+',str(tok)):
-                    val = read_excel_cell(file_path,sheet_name,str(tok))
-                    m_values.append(val)
-            m_min = min(m_values)
-            return m_min
 
 def calc_median(values):
+    index = len(values)/2
+    values.sort()
     if(len(values)%2 == 0):
-        index = len(values)/2
-        values.sort()
         first_number = values[int(index)-1]
         second_number = values[int(index)]
         median = (first_number + second_number)/2
-        return median
     else:
-        index = len(values)/2
-        values.sort()
         median = values[math.floor(index)]
-        return median
     
+    return median
+
 def MEDIAN(tokens):
     if tokens[0] != '(' or tokens[-1] != ')':
         return -1
@@ -263,6 +177,18 @@ def syntax_analyzer(tokens):
                 else:
                     print('MODE result : ',res)
             
-exp = '=MODE(A1;A4;A2)'
+exp = '=MEDIAN(A1;A2)'
+t = lexical_analyzer(exp)
+syntax_analyzer(t)
+
+exp = '=MODE(A1;A2)'
+t = lexical_analyzer(exp)
+syntax_analyzer(t)
+
+exp = '=MEDIAN(A1:A5)'
+t = lexical_analyzer(exp)
+syntax_analyzer(t)
+
+exp = '=MODE(A1:A5)'
 t = lexical_analyzer(exp)
 syntax_analyzer(t)
